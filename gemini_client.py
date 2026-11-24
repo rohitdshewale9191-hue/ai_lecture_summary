@@ -14,8 +14,8 @@ def get_client():
 ### To get Input ready FOR gemini###
 youtube_link=str(input("Enter YOUtube Link:"))
 def video_part(youtube_link):
-    input_dict={"type":"video","url":youtube_link}
-    return input_dict
+   return {"type":"video","uri":youtube_link}
+    
 
 ### Calling gemini agent###
 def call_gemini(client, contents, log, step, schema=None):
@@ -24,7 +24,11 @@ def call_gemini(client, contents, log, step, schema=None):
        interaction = client.interactions.create(
         model="gemini-3.5-flash-lite",
         input=contents,
-        response_format=notes_schema
+        response_format={
+    "type": "text",
+    "mime_type": "application/json",
+    "schema": schema
+}
                       
 )
 
@@ -50,6 +54,18 @@ def call_gemini(client, contents, log, step, schema=None):
 
 ##
 def extract_notes(client, youtube_link,levels, languages, log):
-    notes_prompt.format(levels,languages)
-    input_list=[ video_part(youtube_link),{"type": "text", "text":notes_prompt}]
+    formatted_prompt = notes_prompt.format(levels, languages)
+    input_list=[ video_part(youtube_link),{"type": "text", "text":formatted_prompt}]
     return  call_gemini(client, input_list, log, "notes",notes_schema)
+log=[]
+step="notes"
+levels="intermidate"
+languages="English"
+client=get_client()
+youtube_link=str(input("Enter YOUtube Link:"))
+contents=video_part(youtube_link)
+print(repr(youtube_link))
+answer = extract_notes(
+    client, youtube_link, levels, languages, log
+)
+print(answer)
