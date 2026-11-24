@@ -2,12 +2,61 @@ model="gemini-3.8-flash"
 languages=["English", "Hindi", "Hinglish"]
 levels=["Beginner", "Intermediate", "Advanced"]
 
-
 notes_schema = {
-    "title": "string",
-    "summary": "string",
-    "chapters": [
-        { "start": "MM:SS","heading": "string","keypoints": ["string", "string"] }
+    "type": "OBJECT",
+    "properties": {
+        "title": {
+            "type": "STRING",
+            "description": "Title of the lecture"
+        },
+        "summary": {
+            "type": "STRING",
+            "description": "Short summary of the entire lecture"
+        },
+        "chapters": {
+            "type": "ARRAY",
+            "items": {
+                "type": "OBJECT",
+                "properties": {
+                    "start": {
+                        "type": "STRING",
+                        "description": "Actual chapter start timestamp in MM:SS or HH:MM:SS format"
+                    },
+                    "heading": {
+                        "type": "STRING",
+                        "description": "Chapter heading"
+                    },
+                    "key_points": {
+                        "type": "ARRAY",
+                        "items": {
+                            "type": "STRING"
+                        }
+                    }
+                },
+                "required": ["start", "heading", "key_points"]
+            }
+        },
+        "key_terms": {
+            "type": "ARRAY",
+            "items": {
+                "type": "OBJECT",
+                "properties": {
+                    "term": {
+                        "type": "STRING"
+                    },
+                    "definition": {
+                        "type": "STRING"
+                    }
+                },
+                "required": ["term", "definition"]
+            }
+        }
+    },
+    "required": [
+        "title",
+        "summary",
+        "chapters",
+        "key_terms"
     ]
 }
 
